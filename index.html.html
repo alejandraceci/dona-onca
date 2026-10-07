@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Para a minha dona onça</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=Nunito:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e1712;--bg2:#17271d;--gold:#e0a63a;--bone:#f4ebd8;--ink:#2b1e10;--serif:"Cormorant Garamond",Georgia,serif;--sans:"Nunito",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background-color:var(--bg);color:var(--bone);font-family:var(--sans);
+ background-image:
+  radial-gradient(circle at 25% 30%,transparent 0 10px,rgba(224,166,58,.09) 11px 14px,transparent 15px),
+  radial-gradient(circle at 75% 75%,transparent 0 10px,rgba(224,166,58,.07) 11px 14px,transparent 15px);
+ background-size:110px 110px;
+ padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+ overflow-x:hidden}
+main{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px 18px}
+.screen{width:100%;max-width:440px;text-align:center}
+[hidden]{display:none!important}
+
+/* Envelope */
+.env{position:relative;width:100%;aspect-ratio:4/3;background:var(--bone);border-radius:6px;box-shadow:0 18px 40px rgba(0,0,0,.5);overflow:hidden;transition:opacity .6s,transform .6s}
+.env::before{content:"";position:absolute;inset:0;background:linear-gradient(#0000,#0000),var(--bone);clip-path:polygon(0 0,50% 58%,100% 0,100% 100%,0 100%);filter:brightness(.93)}
+.env::after{content:"";position:absolute;inset:0;background:var(--bone);clip-path:polygon(0 0,100% 0,50% 58%);transform-origin:top;transition:transform .7s}
+.env.open{opacity:0;transform:translateY(30px) scale(.96)}
+.env.open::after{transform:rotateX(180deg)}
+.seal{position:absolute;z-index:2;left:50%;top:58%;width:84px;height:84px;margin:-42px 0 0 -42px;border:0;border-radius:50%;
+ background:radial-gradient(circle at 35% 30%,#f1c768,var(--gold) 55%,#a8731a);font-size:38px;cursor:pointer;
+ box-shadow:0 6px 14px rgba(0,0,0,.4);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.hint{margin-top:22px;font-family:var(--serif);font-style:italic;font-size:1.5rem;color:var(--gold)}
+
+/* Carta */
+.paper{background:var(--bone);color:var(--ink);border-radius:6px;padding:34px 26px;text-align:left;box-shadow:0 18px 40px rgba(0,0,0,.5);border-top:5px solid var(--gold)}
+.paper h1{font-family:var(--serif);font-style:italic;font-weight:600;font-size:2.1rem;line-height:1.15;margin-bottom:18px}
+.paper p{font-family:var(--serif);font-size:1.4rem;line-height:1.4;margin-bottom:14px;min-height:1.4em}
+.caret::after{content:"|";color:var(--gold);margin-left:1px}
+
+/* Cartinhas */
+.cards{margin-top:22px;display:grid;gap:12px}
+.card{width:100%;text-align:left;border:1.5px solid var(--gold);border-radius:10px;background:var(--bg2);color:var(--bone);
+ padding:14px 16px;font:700 1rem var(--sans);cursor:pointer;transition:background .3s}
+.card small{display:block;color:var(--gold);font-size:.8rem;margin-bottom:2px}
+.card .msg{display:none;margin-top:10px;font:italic 500 1.25rem/1.35 var(--serif);color:var(--bone)}
+.card.open{background:#1f3426;cursor:default}
+.card.open .msg{display:block}
+.card.open .tap{display:none}
+.tap{color:var(--bone);opacity:.8}
+
+/* Final */
+.btn{margin-top:22px;border:0;border-radius:999px;padding:15px 30px;background:var(--gold);color:var(--ink);font:700 1.05rem var(--sans);cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.4)}
+.btn:focus-visible,.card:focus-visible,.seal:focus-visible{outline:3px solid var(--bone);outline-offset:3px}
+.final{font-family:var(--serif);font-style:italic;font-weight:600;font-size:2.6rem;line-height:1.1;color:var(--gold);margin-top:26px}
+.sign{display:block;margin-top:20px;font-size:1.6rem;font-weight:500;color:var(--bone)}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:9}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<main>
+ <section class="screen" id="s1">
+  <div class="env" id="env"><button class="seal" id="seal" aria-label="Abrir a carta">🐆</button></div>
+  <p class="hint">Dona Onça, tem uma surpresa te esperando</p>
+ </section>
+
+ <section class="screen" id="s2" hidden>
+  <article class="paper">
+   <h1 id="t0"></h1>
+   <p id="t1"></p><p id="t2"></p><p id="t3"></p>
+  </article>
+  <div class="cards" id="cards" hidden>
+   <button class="card"><small>Abra quando sentir saudade</small><span class="tap">Toque para abrir</span>
+    <span class="msg">Vem pra perto. A vida fica melhor do seu lado, e eu também.</span></button>
+   <button class="card"><small>Abra quando precisar de um elogio</small><span class="tap">Toque para abrir</span>
+    <span class="msg">O mundo é muito mais lindo porque você existe nele. Que sorte a minha ter você na minha vida.</span></button>
+   <button class="card"><small>Abra quando achar que o aniversário acabou</small><span class="tap">Toque para abrir</span>
+    <span class="msg">Acabou nada. Se prepara, dona onça, que tem festa o mês inteiro.</span></button>
+  </div>
+  <button class="btn" id="velas" hidden>Soprar as velinhas 🕯️</button>
+  <p class="final" id="final" hidden>Feliz vida,<br>minha vida!<span class="sign">Com amor, Ceci</span></p>
+ </section>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+async function type(el, text){
+  if(calm){ el.textContent = text; return; }
+  el.classList.add('caret');
+  for(const ch of text){ el.textContent += ch; await sleep(ch === ',' || ch === '.' ? 260 : 42); }
+  el.classList.remove('caret');
+}
+
+$('#seal').onclick = async () => {
+  $('#env').classList.add('open');
+  await sleep(calm ? 0 : 700);
+  $('#s1').hidden = true; $('#s2').hidden = false;
+  await type($('#t0'), 'Feliz aniversário, minha dona onça');
+  await sleep(300);
+  await type($('#t1'), 'A vida é muito boa quando estou com você.');
+  await type($('#t2'), 'Acho que quero continuar a comemoração do seu aniversário pelo resto do mês.');
+  await type($('#t3'), 'Quero que você saiba que é a mulher mais linda e maravilhosa do mundo.');
+  $('#cards').hidden = false;
+};
+
+let opened = 0;
+document.querySelectorAll('.card').forEach(c => c.onclick = () => {
+  if(c.classList.contains('open')) return;
+  c.classList.add('open');
+  if(++opened === 3) $('#velas').hidden = false;
+});
+
+/* Confete */
+const cv = $('#fx'), g = cv.getContext('2d'); let bits = [];
+function fit(){ cv.width = innerWidth; cv.height = innerHeight; }
+addEventListener('resize', fit); fit();
+function burst(){
+  const cols = ['#e0a63a','#f4ebd8','#7fb08a','#f1c768'];
+  for(let i = 0; i < 160; i++) bits.push({x:innerWidth/2,y:innerHeight*.6,
+    vx:(Math.random()-.5)*14,vy:-Math.random()*16-4,s:5+Math.random()*6,
+    c:cols[i%4],r:Math.random()*6,vr:(Math.random()-.5)*.4,life:200});
+  loop();
+}
+function loop(){
+  g.clearRect(0,0,cv.width,cv.height);
+  bits = bits.filter(b => b.life-- > 0);
+  for(const b of bits){
+    b.vy += .35; b.x += b.vx; b.y += b.vy; b.r += b.vr;
+    g.save(); g.translate(b.x,b.y); g.rotate(b.r); g.fillStyle = b.c;
+    g.globalAlpha = Math.min(1, b.life/50); g.fillRect(-b.s/2,-b.s/4,b.s,b.s/2); g.restore();
+  }
+  if(bits.length) requestAnimationFrame(loop);
+}
+$('#velas').onclick = () => {
+  $('#velas').hidden = true; $('#final').hidden = false;
+  if(!calm) burst();
+  $('#final').scrollIntoView({behavior: calm ? 'auto' : 'smooth', block:'center'});
+};
+</script>
+</body>
+</html>
